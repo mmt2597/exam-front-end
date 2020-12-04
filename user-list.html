@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Users List</title>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+
+	<div class="container mt-5">
+
+		<a href="javascript:void(0)" onclick="logout()">LOGOUT</a>
+
+		<h1>USER LIST</h1>
+
+		<table id="table" >
+			<thead>
+				<tr>
+					<th>Username</th>
+					<th>Email</th>
+					<th>Firstname</th>
+					<th>Lastname</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
+<script>
+	let appToken = JSON.parse(localStorage.getItem('app_token'));
+
+	$(document).ready(function() {
+	    $('#table').DataTable({
+	    	"processing": true,
+            "serverSide": true,
+	        "ajax": {
+				"url": "http://localhost:8000/user",
+				"dataType": "json",
+				"type": "GET",
+				"crossDomain": true,
+				"beforeSend": function (xhr) {
+					xhr.setRequestHeader("Authorization", "Bearer " + appToken.access_token)
+				},
+			},
+			"columns": [
+	            { "data": "username" },
+	            { "data": "email" },
+	            { "data": "firstname" },
+	            { "data": "lastname" },
+            ]
+	    });
+	});
+
+	function logout() {
+		$.ajax({
+			method: 'POST',
+			url: 'http://localhost:8000/user/logout',
+			headers: {
+				'Authorization': 'Bearer ' + appToken.access_token,
+			},
+			success: function (response) {
+				location.href = '/'
+				localStorage.clear();
+			}
+		});
+	}
+</script>
+</body>
+</html>

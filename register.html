@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Registration Form</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+	
+
+	<div class="container mt-5">
+		<form class="col-md-6 mx-auto" x-data="registrationForm()" @submit.prevent="register">
+
+			<div class="d-flex justify-content-around mb-5">
+				<div><a href="/index.html" class="">Login</a></div>
+				<div><a href="/register.html" class="active">Register</a></div>
+			</div>
+
+			<h1 class="text-center">Register</h1>
+
+			<p x-html="message" class="mt-4"></p>
+
+			<div class="form-group">
+				<label for="username">Username</label>
+				<input type="username" class="form-control" id="username" aria-describedby="username" x-model="formData.username" placeholder="Enter username">
+				<small id="usernameHelp" class="form-text text-muted"></small>
+			</div>
+			<div class="form-group">
+				<label for="email">Email address</label>
+				<input type="email" class="form-control" id="email" aria-describedby="emailHelp" x-model="formData.email" placeholder="Enter email">
+				<small id="email" class="form-text text-muted"></small>
+			</div>
+			<div class="form-group">
+				<label for="firstname">First Name</label>
+				<input type="firstname" class="form-control" id="firstname" aria-describedby="firstname" x-model="formData.firstname" placeholder="Enter firstname">
+				<small id="firstnameHelp" class="form-text text-muted"></small>
+			</div>
+			<div class="form-group">
+				<label for="lastname">Last Name</label>
+				<input type="lastname" class="form-control" id="lastname" aria-describedby="lastname" x-model="formData.lastname" placeholder="Enter lastname">
+				<small id="lastnameHelp" class="form-text text-muted"></small>
+			</div>
+			<div class="form-group">
+				<label for="password">Password</label>
+				<input type="password" class="form-control" id="password" x-model="formData.password" placeholder="Password">
+			</div>
+			<div class="form-group">
+				<label for="password_confirmation">Confirm Password</label>
+				<input type="password" class="form-control" id="password_confirmation" x-model="formData.password_confirmation" placeholder="Password">
+				<small id="usernameHelp" class="form-text text-muted"></small>
+			</div>
+			<button class="btn btn-primary btn-block">Register</button>
+		</form>
+
+	</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    function registrationForm() {
+      return {
+        formData: {
+          username: '',
+          email: '',
+          firstname: '',
+          lastname: '',
+          password: '',
+          password_confirmation: ''
+        },
+        message: '',
+
+		register() {
+
+			var _this = this;
+			this.message = '';
+			
+			axios({
+				method: 'POST',
+				url: 'http://localhost:8000/user/register',
+				data: this.formData,
+			}).then((response) => {
+
+				_this.message = '<b>Succesfully Registered</b>';
+				_this.resetForm();
+
+			}).catch( (e) => {
+				Object.keys(e.response.data.errors)
+					.map(function(key, index) {
+						_this.message += '<b>' + key + '</b>' + ': ' + e.response.data.errors[key].join(", ") + '<br>';
+					});
+			});
+
+		},
+		resetForm () {
+			this.formData.username = '',
+			this.formData.email = '',
+			this.formData.firstname = '',
+			this.formData.lastname = '',
+			this.formData.password = '',
+			this.formData.password_confirmation = ''
+		}
+      }
+    }
+</script>
+</body>
+</html>
